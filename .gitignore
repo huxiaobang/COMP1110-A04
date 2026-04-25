@@ -1,0 +1,54 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Test, coverage, and type-check caches
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Build and packaging output
+build/
+dist/
+*.egg-info/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local secrets and environment overrides
+.env
+.env.*
+
+# Local project notes and reference documents
+Agents.md
+COMP1110 Project Guidelines.pdf
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# App-generated files
+output/
+COMP1110/output/
+data/test_small.txt
+COMP1110/data/test_small.txt

@@ -143,6 +143,10 @@ class TransportNetwork:
         """Return Stop object or None."""
         return self.stops.get(stop_id)
 
+    def has_stop(self, stop_id):
+        """Return True if the network contains the given stop ID."""
+        return stop_id in self.stops
+
     def find_stop_by_name(self, name):
         """Case-insensitive exact match by name. Returns Stop or None."""
         for stop in self.stops.values():
@@ -158,6 +162,29 @@ class TransportNetwork:
 
     def is_empty(self):
         return len(self.stops) == 0
+
+    def is_reachable(self, origin_id, destination_id):
+        """
+        Return True if destination_id can be reached from origin_id.
+        Uses a simple graph search over directed segments.
+        """
+        if origin_id not in self.stops or destination_id not in self.stops:
+            return False
+        if origin_id == destination_id:
+            return True
+
+        visited = {origin_id}
+        stack = [origin_id]
+        while stack:
+            current = stack.pop()
+            for segment in self.get_outgoing(current):
+                next_id = segment.to_stop_id
+                if next_id == destination_id:
+                    return True
+                if next_id not in visited:
+                    visited.add(next_id)
+                    stack.append(next_id)
+        return False
 
     def summary_string(self):
         """Return a formatted summary of the network."""

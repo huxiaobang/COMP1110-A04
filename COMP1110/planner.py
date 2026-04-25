@@ -38,7 +38,7 @@ def find_journeys(network, origin_id, destination_id,
         if len(journeys) >= max_results:
             return
 
-        # Found destination — record the journey
+        # Found destination: record the journey
         if current_id == destination_id and path_segments:
             journeys.append(Journey(list(path_segments)))
             return
