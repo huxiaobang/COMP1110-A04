@@ -18,7 +18,7 @@ BOM_PREFIXES = ("\ufeff", "\u00ef\u00bb\u00bf", "\u9518\udcbf")
 PREFERENCE_DESCRIPTIONS = {
     "fastest": "Minimize total travel time",
     "cheapest": "Minimize total fare",
-    "fewest_segments": "Minimize the number of journey legs",
+    "fewest_segments": "Minimize the number of journey segments",
     "fewest_transfers": "Minimize changes between transport types",
 }
 
@@ -42,8 +42,8 @@ def read_input(prompt, eof_default=""):
 def display_banner():
     print()
     print("=" * 58)
-    print(f"   Smart Public Transport Advisor  v{VERSION}")
-    print("   COMP1110 Group Project")
+    print(f"   Smart Public Transport Advisor")
+    print("   COMP1110 A04 Group Project")
     print("=" * 58)
 
 
@@ -70,14 +70,14 @@ def display_stops(network):
         return
 
     print()
-    header = f"  {'ID':<8} {'Name':<22} {'Lat':<10} {'Lon':<10} {'Outgoing':<8}"
+    header = f"  {'ID':<8} {'Name':<22} {'Latitude':<10} {'Longitude':<10}"
     print(header)
     print("  " + "-" * (len(header) - 2))
     for stop in sorted(network.stops.values(), key=lambda s: s.stop_id):
         out_count = len(network.get_outgoing(stop.stop_id))
         print(
             f"  {stop.stop_id:<8} {stop.name:<22} "
-            f"{stop.latitude:<10.4f} {stop.longitude:<10.4f} {out_count:<8}"
+            f"{stop.latitude:<10.4f} {stop.longitude:<10.4f}"
         )
     print(f"\n  Total: {len(network.stops)} stop(s)")
 
