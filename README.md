@@ -95,8 +95,8 @@ Example:
 ```text
 STOP,CEN,Central,22.2820,114.1588
 STOP,ADM,Admiralty,22.2793,114.1654
-SEGMENT,CEN,ADM,MTR,2,5.2
-SEGMENT,ADM,CEN,MTR,2,5.2
+SEGMENT,CEN,ADM,MTR,2,4.9
+SEGMENT,ADM,CEN,MTR,2,4.9
 ```
 
 Segments are directed. If travel should be possible in both directions, the file must include one segment for each direction.
@@ -167,6 +167,8 @@ This is a simplified academic project, not a real transport app.
 - No live map display.
 - No GPS or location detection.
 - No database storage.
+- Student, child, and elderly travel fares not accounted for (only adult).
+- MTR journeys consisting of more than one segment often generate over-estimated costs
 - Fares and durations are simplified sample values.
 - Route generation uses a simple depth-limited search and may miss better routes in larger networks.
 - Walking links only exist where they are explicitly listed as segments.
