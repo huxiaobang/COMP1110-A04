@@ -1,6 +1,7 @@
 # Smart Public Transport Advisor
 
-COMP1110 A04 Group Project - Topic B: Smart Public Transport Advisor
+COMP1110 A04 Group Project - Topic B: Smart Public Transport Advisor 
+
 By Hu Xiaobang, Lau Yat Ching Edmond, Mao Junkai, and Qin Puxun Anderson
 
 ## Project Overview
