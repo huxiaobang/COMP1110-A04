@@ -10,7 +10,6 @@ from file_io import create_default_network, generate_sample_files, load_network
 from planner import VALID_PREFERENCES, find_journeys, rank_journeys
 
 
-VERSION = "1.0"
 MAX_DISPLAY = 5
 LOG_DIR = "output"
 BOM_PREFIXES = ("\ufeff", "\u00ef\u00bb\u00bf", "\u9518\udcbf")
@@ -41,10 +40,11 @@ def read_input(prompt, eof_default=""):
 
 def display_banner():
     print()
-    print("=" * 58)
-    print(f"   Smart Public Transport Advisor")
+    print("=" * 78)
+    print("   Smart Public Transport Advisor")
     print("   COMP1110 A04 Group Project")
-    print("=" * 58)
+    print("   By Hu Xiaobang, Lau Yat Ching Edmond, Mao Junkai, and Qin Puxun Anderson")
+    print("=" * 78)
 
 
 def display_menu():

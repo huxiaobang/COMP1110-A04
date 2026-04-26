@@ -1,14 +1,13 @@
 # Smart Public Transport Advisor
 
-COMP1110 Group Project - Topic B: Smart Public Transport Advisor
+COMP1110 A04 Group Project - Topic B: Smart Public Transport Advisor
+By Hu Xiaobang, Lau Yat Ching Edmond, Mao Junkai, and Qin Puxun Anderson
 
 ## Project Overview
 
-This project is a text-based public transport route advisor. It models a small city transport network as stops and directed travel segments. A user can choose an origin, destination, and travel preference, then the program generates possible journeys and ranks them according to the selected preference.
+This is a text-based public transport route advisor. It models a small city transport network as stops and travel segments. A user can choose an origin, destination, and travel preference, then generate possible journeys and rank them according to the selected preference.
 
-The current example network is based on Hong Kong public transport. It contains 12 stops and 40 directed segments across MTR, bus, minibus, and walking links.
-
-This project is designed for the COMP1110 requirement of simple text-based interaction and file input/output. It does not use live transport APIs, maps, GPS, databases, or real-time arrival data.
+The default example network is based on Hong Kong's public transport. It contains 12 stops and 40 segments across MTR, bus, minibus, and walking.
 
 ## Language and Environment
 
@@ -25,12 +24,12 @@ The project uses only the Python standard library.
 COMP1110/
   main.py                 Text-based menu and user workflows
   models.py               Stop, Segment, Journey, and TransportNetwork classes
-  planner.py              Candidate journey generation and ranking
+  planner.py              Journey generation and ranking algorithm
   file_io.py              Load/save transport network files
   data/
     hk_network.txt        Sample Hong Kong transport network
     test_cases.py         Automated tests and case-study demonstrations
-README.md                 Project instructions
+README.md                 Project description/instructions (you are here!)
 ```
 
 ## How to Run

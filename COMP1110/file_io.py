@@ -132,33 +132,33 @@ def create_default_network():
     # (from, to, type, duration_min, cost_hkd)
     segment_data = [
         # MTR Island Line
-        ("CEN", "ADM", "MTR",  2,  5.2),
-        ("ADM", "CEN", "MTR",  2,  5.2),
-        ("ADM", "WCH", "MTR",  2,  5.2),
-        ("WCH", "ADM", "MTR",  2,  5.2),
-        ("WCH", "CWB", "MTR",  2,  5.2),
-        ("CWB", "WCH", "MTR",  2,  5.2),
-        ("CWB", "NOP", "MTR",  3,  5.8),
-        ("NOP", "CWB", "MTR",  3,  5.8),
+        ("CEN", "ADM", "MTR",  2,  4.9),
+        ("ADM", "CEN", "MTR",  2,  4.9),
+        ("ADM", "WCH", "MTR",  2,  4.9),
+        ("WCH", "ADM", "MTR",  2,  4.9),
+        ("WCH", "CWB", "MTR",  2,  4.9),
+        ("CWB", "WCH", "MTR",  2,  4.9),
+        ("CWB", "NOP", "MTR",  3,  5.9),
+        ("NOP", "CWB", "MTR",  3,  5.9),
         # MTR Cross-harbour
-        ("ADM", "TST", "MTR",  4, 10.5),
-        ("TST", "ADM", "MTR",  4, 10.5),
+        ("ADM", "TST", "MTR",  4, 10.6),
+        ("TST", "ADM", "MTR",  4, 10.6),
         # MTR Tsuen Wan Line (Kowloon side)
-        ("TST", "YMT", "MTR",  2,  5.2),
-        ("YMT", "TST", "MTR",  2,  5.2),
-        ("YMT", "MKK", "MTR",  2,  5.2),
-        ("MKK", "YMT", "MTR",  2,  5.2),
+        ("TST", "YMT", "MTR",  2,  4.9),
+        ("YMT", "TST", "MTR",  2,  4.9),
+        ("YMT", "MKK", "MTR",  2,  4.9),
+        ("MKK", "YMT", "MTR",  2,  4.9),
         # MTR Kwun Tong / East Rail connections
-        ("MKK", "KOT", "MTR",  6,  8.5),
-        ("KOT", "MKK", "MTR",  6,  8.5),
-        ("KOT", "SHA", "MTR", 10, 12.0),
-        ("SHA", "KOT", "MTR", 10, 12.0),
+        ("MKK", "KOT", "MTR",  6,  5.9),
+        ("KOT", "MKK", "MTR",  6,  5.9),
+        ("KOT", "SHA", "MTR", 10, 6.7),
+        ("SHA", "KOT", "MTR", 10, 6.7),
         # MTR Tseung Kwan O Line
-        ("NOP", "TKO", "MTR", 15, 10.5),
-        ("TKO", "NOP", "MTR", 15, 10.5),
+        ("NOP", "TKO", "MTR", 15, 13.2),
+        ("TKO", "NOP", "MTR", 15, 13.2),
         # MTR Tsuen Wan extension
-        ("MKK", "TWN", "MTR", 15, 12.0),
-        ("TWN", "MKK", "MTR", 15, 12.0),
+        ("MKK", "TWN", "MTR", 15, 9.2),
+        ("TWN", "MKK", "MTR", 15, 9.2),
 
         # Bus routes
         ("CEN", "CWB", "Bus",  15,  4.2),
