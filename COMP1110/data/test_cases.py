@@ -1,6 +1,6 @@
 """
 test_cases.py - Automated tests and case study demonstrations.
-Run with:  python test_cases.py
+Run with:  python data/test_cases.py   (from the COMP1110 directory)
 
 Covers:
   1. Unit tests for input validation and model logic
@@ -9,9 +9,17 @@ Covers:
   4. Case study scenarios
 """
 
+import sys
+import os
+# Ensure the parent directory (COMP1110/) is on the import path so that
+# this script can be run directly from any working directory without
+# needing to set PYTHONPATH manually.
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
 from models import Stop, Segment, Journey, TransportNetwork
 from file_io import load_network, create_default_network, save_network
 from planner import find_journeys, rank_journeys, VALID_PREFERENCES
+from planner import find_journeys_dfs, find_journeys_dijkstra, LARGE_NETWORK_THRESHOLD
 from main import validate_stop
 import os
 import builtins
@@ -313,6 +321,97 @@ def case_study_preference_comparison():
 
 
 # ================================================================
+#  5. Dijkstra algorithm tests
+# ================================================================
+
+def test_dijkstra_basic():
+    print_section("Test: Dijkstra basic correctness")
+    net = create_default_network()
+    # Dijkstra should find optimal fastest route
+    dij = find_journeys_dijkstra(net, "CEN", "SHA", preference="fastest", k=3)
+    check(len(dij) >= 1, "Dijkstra finds at least 1 journey")
+    check(dij[0].total_duration <= 30, "Dijkstra fastest CEN->SHA <= 30 min")
+
+    # Compare with DFS: Dijkstra best should be <= DFS best
+    dfs = find_journeys_dfs(net, "CEN", "SHA")
+    dfs_ranked = rank_journeys(dfs, "fastest")
+    check(dij[0].total_duration <= dfs_ranked[0].total_duration,
+          "Dijkstra optimal <= DFS best for fastest")
+
+    # Cheapest preference
+    dij_cheap = find_journeys_dijkstra(net, "CEN", "SHA", preference="cheapest", k=3)
+    check(dij_cheap[0].total_cost <= dfs_ranked[0].total_cost,
+          "Dijkstra cheapest <= DFS best cost")
+
+
+def test_dijkstra_unreachable():
+    print_section("Test: Dijkstra unreachable destination")
+    net = TransportNetwork()
+    net.add_stop(Stop("A", "StopA"))
+    net.add_stop(Stop("B", "StopB"))
+    # No segments - B is unreachable from A
+    result = find_journeys_dijkstra(net, "A", "B", preference="fastest", k=3)
+    check(result == [], "Dijkstra returns empty list for unreachable destination")
+
+
+def test_auto_switch():
+    print_section("Test: Auto algorithm selection by network size")
+    net = create_default_network()
+    # Small network (12 stops) should use DFS
+    check(len(net.stops) <= LARGE_NETWORK_THRESHOLD,
+          f"Sample network ({len(net.stops)} stops) <= threshold ({LARGE_NETWORK_THRESHOLD})")
+    # find_journeys with default method on small network gives same results as DFS
+    auto_result = find_journeys(net, "CEN", "SHA", preference="fastest")
+    dfs_result = find_journeys_dfs(net, "CEN", "SHA")
+    check(len(auto_result) == len(dfs_result),
+          "Auto selects DFS for small network (same result count)")
+
+
+# ================================================================
+#  6. Case Study 5: Real-data network tests
+# ================================================================
+
+def case_study_real_network():
+    print_section("Case Study 5: Real-data network")
+    filepath = os.path.join("data", "hk_network_real.txt")
+    if not os.path.exists(filepath):
+        print("  [SKIP] hk_network_real.txt not found (run fetch_real_data.py first)")
+        return
+
+    net = load_network(filepath)
+    check(len(net.stops) >= 30, f"Real network has >= 30 stops ({len(net.stops)})")
+    check(len(net.segments) >= 100, f"Real network has >= 100 segments ({len(net.segments)})")
+
+    # 5a: Walking shortcut TST -> ETS
+    j = find_journeys(net, "TST", "ETS", preference="fastest")
+    ranked = rank_journeys(j, "fastest")
+    check(len(ranked) >= 1, "TST->ETS: route found")
+    check(ranked[0].total_duration <= 6, "TST->ETS fastest <= 6 min (walking shortcut)")
+    check(ranked[0].total_cost == 0.0, "TST->ETS cheapest uses walking ($0)")
+
+    # 5b: CEN -> SHT multi-modal comparison
+    results = {}
+    for pref in VALID_PREFERENCES:
+        j = find_journeys(net, "CEN", "SHT", preference=pref)
+        results[pref] = rank_journeys(j, pref)[0]
+
+    check(results["fastest"].total_duration < results["cheapest"].total_duration,
+          "CEN->SHT: fastest is quicker than cheapest")
+    check(results["cheapest"].total_cost < results["fastest"].total_cost,
+          "CEN->SHT: cheapest costs less than fastest")
+    check(results["cheapest"].total_cost < 20.0,
+          f"CEN->SHT cheapest uses bus/walk (${results['cheapest'].total_cost:.1f} < $20)")
+
+    # Walking segment used in cheapest route
+    walk_used = any(s.transport_type == "Walking" for s in results["cheapest"].segments)
+    check(walk_used, "CEN->SHT cheapest route uses walking segment")
+
+    # 5c: Dijkstra guarantees optimality on real network
+    check(len(net.stops) > LARGE_NETWORK_THRESHOLD,
+          f"Real network ({len(net.stops)} stops) triggers Dijkstra auto-switch")
+
+
+# ================================================================
 #  Run all tests
 # ================================================================
 
@@ -339,6 +438,14 @@ def main():
     case_study_rush_hour()
     case_study_transfer_averse()
     case_study_preference_comparison()
+
+    # Dijkstra tests
+    test_dijkstra_basic()
+    test_dijkstra_unreachable()
+    test_auto_switch()
+
+    # Case study 5 (real network)
+    case_study_real_network()
 
     # Summary
     print(f"\n{'=' * 55}")

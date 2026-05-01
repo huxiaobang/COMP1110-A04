@@ -145,32 +145,39 @@ The resulting network covers 36 core stations across 8 MTR lines (ISL, TWL, KTL,
 
 From the `COMP1110` directory:
 
-```powershell
-$env:PYTHONPATH='.'; python data\test_cases.py
+```bash
+cd COMP1110
+python data/test_cases.py
 ```
+
+No `PYTHONPATH` setup is needed — the test script automatically adds the
+parent directory to the import path.
 
 The test suite covers:
 
 - stop, segment, journey, and network model behavior
 - file loading and saving
-- journey generation
+- journey generation (DFS and Dijkstra)
 - journey ranking
-- four case-study scenarios
+- algorithm auto-selection by network size
+- four case-study scenarios on the sample network
+- case study 5 on the real-data network (walking shortcuts, multi-modal routing)
 
 Current expected result:
 
 ```text
-52 passed, 0 failed
+69 passed, 0 failed
 ```
 
 ## Case Studies
 
-The test file includes four case-study demonstrations:
+The test file includes five case-study demonstrations:
 
-1. Budget commuter: Central to Sha Tin using `cheapest`.
-2. Rush-hour student: Tsuen Wan to Causeway Bay using `fastest`.
-3. Transfer-averse user: Tseung Kwan O to Tsim Sha Tsui using `fewest_transfers`.
-4. Preference comparison: Admiralty to Kowloon Tong using all preference modes.
+1. Budget commuter: Central to Sha Tin using `cheapest` (sample network).
+2. Rush-hour student: Tsuen Wan to Causeway Bay using `fastest` (sample network).
+3. Transfer-averse user: Tseung Kwan O to Tsim Sha Tsui using `fewest_transfers` (sample network).
+4. Preference comparison: Admiralty to Kowloon Tong using all preference modes (sample network).
+5. Real-data network: Walking shortcuts (TST→ETS), multi-modal routing (CEN→SHT), and sample-vs-real comparison (real network, 36 stops).
 
 For each case, the program generates candidate journeys, ranks them, and prints the best route with time, cost, segment count, and route steps.
 

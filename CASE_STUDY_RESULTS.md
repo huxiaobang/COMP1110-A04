@@ -4,9 +4,9 @@ This document records reproducible case-study outputs for the Smart Public Trans
 
 Run command:
 
-```powershell
+```bash
 cd COMP1110
-$env:PYTHONPATH='.'; python data\test_cases.py
+python data/test_cases.py
 ```
 
 ## Case Study 1: Budget Commuter
@@ -34,7 +34,7 @@ Steps:
   3. Bus MKK -> SHA (25 min, $8.5)
 ```
 
-Discussion: The system correctly prioritizes fare over speed. The route is cheaper than the all-MTR route, but it requires mixed transport modes and more transfer effort. A real app may also consider waiting times, live delays, and walking distance between transfer points.
+Discussion: The system correctly prioritizes fare over speed. The route avoids the more expensive all-MTR path by combining bus and minibus segments, saving money at the cost of longer travel time. A real app may also consider waiting times, live delays, and walking distance between transfer points.
 
 ## Case Study 2: Rush-Hour Student
 
@@ -52,16 +52,16 @@ Best ranked route:
 
 ```text
 Time: 27 min
-Cost: $43.3 HKD
+Cost: $39.4 HKD
 Segments: 6
 Route: TWN -> MKK -> YMT -> TST -> ADM -> WCH -> CWB
 Steps:
-  1. MTR TWN -> MKK (15 min, $12.0)
-  2. MTR MKK -> YMT (2 min, $5.2)
-  3. MTR YMT -> TST (2 min, $5.2)
-  4. MTR TST -> ADM (4 min, $10.5)
-  5. MTR ADM -> WCH (2 min, $5.2)
-  6. MTR WCH -> CWB (2 min, $5.2)
+  1. MTR TWN -> MKK (15 min, $9.2)
+  2. MTR MKK -> YMT (2 min, $4.9)
+  3. MTR YMT -> TST (2 min, $4.9)
+  4. MTR TST -> ADM (4 min, $10.6)
+  5. MTR ADM -> WCH (2 min, $4.9)
+  6. MTR WCH -> CWB (2 min, $4.9)
 ```
 
 Discussion: The fastest result is an all-MTR journey. It is quick but expensive in this simplified network because each segment has an individual sample fare. A real journey planner would likely use official fare tables and may combine multiple MTR legs into one charged trip.
@@ -83,15 +83,15 @@ Best ranked route:
 ```text
 Transfers: 0
 Time: 26 min
-Cost: $37.2 HKD
+Cost: $39.5 HKD
 Segments: 5
 Route: TKO -> NOP -> CWB -> WCH -> ADM -> TST
 Steps:
-  1. MTR TKO -> NOP (15 min, $10.5)
-  2. MTR NOP -> CWB (3 min, $5.8)
-  3. MTR CWB -> WCH (2 min, $5.2)
-  4. MTR WCH -> ADM (2 min, $5.2)
-  5. MTR ADM -> TST (4 min, $10.5)
+  1. MTR TKO -> NOP (15 min, $13.2)
+  2. MTR NOP -> CWB (3 min, $5.9)
+  3. MTR CWB -> WCH (2 min, $4.9)
+  4. MTR WCH -> ADM (2 min, $4.9)
+  5. MTR ADM -> TST (4 min, $10.6)
 ```
 
 Discussion: The system selects a route with no transport-type transfer. This is convenient for a transfer-averse user, but the simplified model counts only changes between transport types, not station-platform transfers or walking inside stations.
@@ -112,12 +112,12 @@ Best ranked routes by preference:
 
 | Preference | Route | Time | Cost | Segments | Transfers |
 | --- | --- | ---: | ---: | ---: | ---: |
-| `fastest` | ADM -> TST -> YMT -> MKK -> KOT | 14 min | $29.4 | 4 | 0 |
-| `cheapest` | ADM -> WCH -> CEN -> TST -> MKK -> KOT | 59 min | $22.8 | 5 | 4 |
-| `fewest_segments` | ADM -> TST -> MKK -> KOT | 18 min | $23.0 | 3 | 2 |
-| `fewest_transfers` | ADM -> TST -> YMT -> MKK -> KOT | 14 min | $29.4 | 4 | 0 |
+| `fastest` | ADM -> TST -> YMT -> MKK -> KOT | 14 min | $26.3 | 4 | 0 |
+| `cheapest` | ADM -> WCH -> CEN -> TST -> MKK -> KOT | 59 min | $20.2 | 5 | 4 |
+| `fewest_segments` | ADM -> TST -> MKK -> KOT | 18 min | $20.5 | 3 | 2 |
+| `fewest_transfers` | ADM -> TST -> YMT -> MKK -> KOT | 14 min | $26.3 | 4 | 0 |
 
-Discussion: This case shows the value of preference-based ranking. The fastest and fewest-transfer choices are the same all-MTR route, while the cheapest option accepts much longer travel time and more transfer changes to reduce cost. The fewest-segments route uses fewer legs than the fastest route but is not the cheapest. A real transport app would also consider live service status, walking time, exact fare rules, and user comfort.
+Discussion: This case shows the value of preference-based ranking. The fastest and fewest-transfer choices are the same all-MTR route ($26.3, 14 min), while the cheapest option ($20.2, 59 min) accepts much longer travel time and more transfer changes to reduce cost. The fewest-segments route ($20.5, 18 min, 3 legs) uses fewer legs than the fastest route but is not the cheapest. A real transport app would also consider live service status, walking time, exact fare rules, and user comfort.
 
 ## Overall Evaluation
 
@@ -208,8 +208,8 @@ Results:
 | Preference | Route | Time | Cost | Segs | Xfer | Types |
 |------------|-------|-----:|-----:|-----:|-----:|-------|
 | `fastest` | CEN → ADM → HUH → MKK → KOT → TAW → SHT | 27 min | $36.2 | 6 | 0 | MTR |
-| `cheapest` | CEN → WAC → ADM → SHT | 65 min | $15.9 | 3 | 2 | Minibus, Walking, Bus |
-| `fewest_segments` | CEN → ADM → SHT | 42 min | $17.3 | 2 | 1 | MTR, Bus |
+| `cheapest` | CEN → WAC → ADM → SHT | 65 min | $15.9 | 3 | 2 | Bus, Minibus, Walking |
+| `fewest_segments` | CEN → ADM → SHT | 42 min | $17.3 | 2 | 1 | Bus, MTR |
 | `fewest_transfers` | CEN → ADM → TST → JOR → YMT → HOM → DIH → TAW → SHT | 33 min | $53.0 | 8 | 0 | MTR |
 
 Discussion:
