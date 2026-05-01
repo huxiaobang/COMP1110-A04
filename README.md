@@ -10,6 +10,8 @@ This is a text-based public transport route advisor. It models a small city tran
 
 The default example network is based on Hong Kong's public transport. It contains 12 stops and 40 segments across MTR, bus, minibus, and walking.
 
+The program also supports fetching real transport data from Hong Kong government open-data APIs (MTR station names and adult Octopus fares), combined with curated bus, minibus, and walking segments, to build a larger 36-stop, 122-segment network covering eight MTR lines.
+
 ## Language and Environment
 
 - Language: Python
@@ -25,12 +27,15 @@ The project uses only the Python standard library.
 COMP1110/
   main.py                 Text-based menu and user workflows
   models.py               Stop, Segment, Journey, and TransportNetwork classes
-  planner.py              Journey generation and ranking algorithm
+  planner.py              Journey generation and ranking (DFS + Dijkstra)
   file_io.py              Load/save transport network files
+  fetch_real_data.py      Fetch real HK data from government APIs
   data/
-    hk_network.txt        Sample Hong Kong transport network
+    hk_network.txt        Sample Hong Kong transport network (12 stops)
+    hk_network_real.txt   Real-data network (36 stops, auto-generated)
     test_cases.py         Automated tests and case-study demonstrations
 README.md                 Project description/instructions (you are here!)
+CASE_STUDY_RESULTS.md     Detailed case study outputs and discussion
 ```
 
 ## How to Run
@@ -51,6 +56,7 @@ The program loads the default Hong Kong network automatically. Use the menu to:
 - load a network from file
 - generate sample data files
 - export the latest query result
+- fetch real HK network from government APIs
 
 ## Example Query
 
@@ -103,14 +109,37 @@ Segments are directed. If travel should be possible in both directions, the file
 
 ## How Journey Generation Works
 
-The route planner uses a depth-limited search to generate candidate journeys:
+The program offers two route-finding algorithms:
 
-- It starts from the origin stop.
-- It follows outgoing segments to adjacent stops.
-- It avoids repeating stops in the same journey.
-- It stops when the destination is reached, the depth limit is reached, or enough candidate journeys are found.
+### Depth-Limited DFS (default for small networks ≤ 30 stops)
 
-This approach is intentionally simple for COMP1110. It finds reasonable candidate journeys, but it does not guarantee mathematically optimal routes.
+- Enumerates all simple paths (no repeated stops) up to a maximum depth.
+- Generates many candidate journeys for flexible post-hoc ranking.
+- Simple and effective for small hand-crafted networks.
+
+### Dijkstra + Yen's K-Shortest Paths (auto-selected for larger networks > 30 stops)
+
+- Dijkstra's algorithm guarantees the optimal journey for the selected preference.
+- Yen's algorithm extends this to find the top-k alternative journeys.
+- Efficient even on larger networks (e.g., the 36-stop real-data network).
+
+The algorithm is selected automatically based on network size, or can be forced manually via the `method` parameter.
+
+## Real Data from Government APIs
+
+Use menu option `9` to fetch real transport data from:
+
+- **MTR stations and line topology:** `opendata.mtr.com.hk` (CSV)
+- **MTR adult Octopus fares:** `opendata.mtr.com.hk` (CSV)
+
+This is combined with hand-curated data for:
+
+- Bus and minibus segments (fares and durations from official route info)
+- Walking segments between nearby stations (surveyed manually)
+- MTR travel times (estimated from public timetables)
+- Station coordinates (public geographic data)
+
+The resulting network covers 36 core stations across 8 MTR lines (ISL, TWL, KTL, TKL, EAL, TML, SIL, TCL) with 122 segments. It is saved to `data/hk_network_real.txt` in the same format as the sample network.
 
 ## How to Run Tests
 
@@ -168,18 +197,19 @@ This is a simplified academic project, not a real transport app.
 - No GPS or location detection.
 - No database storage.
 - Student, child, and elderly travel fares not accounted for (only adult).
-- MTR journeys consisting of more than one segment often generate over-estimated costs
-- Fares and durations are simplified sample values.
-- Route generation uses a simple depth-limited search and may miss better routes in larger networks.
-- Walking links only exist where they are explicitly listed as segments.
+- MTR fares are per-segment (from API OD pairs between adjacent selected stations); multi-segment MTR journeys may slightly differ from the actual end-to-end Octopus fare.
+- Bus/minibus fares and durations are curated estimates, not live data.
+- Walking links only exist where explicitly listed.
+- DFS may miss better routes in larger networks (Dijkstra addresses this).
 
 ## Future Improvements
 
 Possible improvements include:
 
-- adding more stops and more realistic transport data
-- adding accessibility preferences
-- adding walking-distance estimates
-- supporting more detailed transfer penalties
-- improving route search with more advanced graph algorithms
-- adding clearer report/export formatting for case studies
+- Expanding the real-data network to cover more stations and bus routes
+- Adding real-time ETA data from MTR and KMB APIs
+- Supporting student, child, and elderly concession fares
+- Adding accessibility preferences (e.g., barrier-free routes)
+- Estimating walking segments automatically from station coordinates
+- Supporting more detailed transfer penalties (waiting time, walking distance)
+- Adding a graphical or web-based interface
